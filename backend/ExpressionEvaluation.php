@@ -15,8 +15,15 @@ class ExpressionEvaluator {
                 throw new Exception('Missing required parameters');
             }
 
-            $expression = preg_replace('/\s+/', '', $data['expression']);
-            self::$variables = $data['variables'];
+            $expression = $data['expression'];
+            $expression = preg_replace('/([+\-*\/^()])/', ' $1 ', $expression);
+            $expression = preg_replace('/\s+/', ' ', $expression);
+            $expression = trim($expression);
+            
+            // Ensure all variables are converted to float values
+            self::$variables = array_map(function($val) {
+                return floatval($val);
+            }, $data['variables']);
 
             $result = match($data['type']) {
                 'infix' => self::evaluateInfix($expression),
@@ -56,20 +63,30 @@ class ExpressionEvaluator {
             } elseif ($token === '(') {
                 array_push($stack, $token);
             } elseif ($token === ')') {
-                while (end($stack) !== '(') {
+                $foundOpen = false;
+                while (!empty($stack) && end($stack) !== '(') {
                     $output[] = array_pop($stack);
                 }
-                array_pop($stack);
+                if (empty($stack)) {
+                    throw new Exception('Mismatched parentheses: too many closing parentheses');
+                }
+                array_pop($stack); // Remove the '('
+                $foundOpen = true;
             } else {
-                while (!empty($stack) && self::precedence(end($stack)) >= self::precedence($token)) {
+                while (!empty($stack) && end($stack) !== '(' && self::precedence(end($stack)) >= self::precedence($token)) {
                     $output[] = array_pop($stack);
                 }
                 array_push($stack, $token);
             }
         }
 
+        // Check for unmatched open parentheses
         while (!empty($stack)) {
-            $output[] = array_pop($stack);
+            $op = array_pop($stack);
+            if ($op === '(') {
+                throw new Exception('Mismatched parentheses: too many opening parentheses');
+            }
+            $output[] = $op;
         }
 
         return implode(' ', $output);
@@ -82,16 +99,22 @@ class ExpressionEvaluator {
         foreach ($tokens as $token) {
             if (preg_match('/\s/', $token)) continue;
             else if (is_numeric($token)) {
-                array_push($stack, $token);
+                array_push($stack, floatval($token));
             } elseif (isset(self::$variables[$token])) {
                 array_push($stack, self::$variables[$token]);
             } elseif (self::isOperator($token)) {
+                if (count($stack) < 2) {
+                    throw new Exception('Invalid postfix expression: insufficient operands');
+                }
                 $b = array_pop($stack);
                 $a = array_pop($stack);
                 array_push($stack, self::operate($a, $b, $token));
             }
         }
 
+        if (empty($stack)) {
+            throw new Exception('Invalid postfix expression');
+        }
         return array_pop($stack);
     }
 
@@ -102,16 +125,22 @@ class ExpressionEvaluator {
         foreach ($tokens as $token) {
             if (preg_match('/\s/', $token)) continue;
             else if (is_numeric($token)) {
-                array_push($stack, $token);
+                array_push($stack, floatval($token));
             } elseif (isset(self::$variables[$token])) {
                 array_push($stack, self::$variables[$token]);
             } elseif (self::isOperator($token)) {
-                $a = array_pop($stack);
+                if (count($stack) < 2) {
+                    throw new Exception('Invalid prefix expression: insufficient operands');
+                }
                 $b = array_pop($stack);
+                $a = array_pop($stack);
                 array_push($stack, self::operate($a, $b, $token));
             }
         }
 
+        if (empty($stack)) {
+            throw new Exception('Invalid prefix expression');
+        }
         return array_pop($stack);
     }
 
@@ -120,11 +149,23 @@ class ExpressionEvaluator {
             ? '/([a-zA-Z][a-zA-Z0-9]*)|\d+|([+\-*\/^()])/' 
             : '/([a-zA-Z][a-zA-Z0-9]*)|\d+|([+\-*\/^])/';
         
-        preg_match_all($pattern, $exp, $matches);
+        if (!preg_match_all($pattern, $exp, $matches, PREG_PATTERN_ORDER)) {
+            throw new Exception('Invalid expression format');
+        }
         
-        return array_map(function($token) {
-            return is_numeric($token) ? $token + 0 : $token;
-        }, array_filter($matches[0]));
+        $tokens = $matches[0];
+        
+        $result = [];
+        foreach ($tokens as $token) {
+            if (empty($token)) continue;
+            $result[] = $token;
+        }
+        
+        if (empty($result)) {
+            throw new Exception('No valid tokens found in expression');
+        }
+        
+        return $result;
     }
 
     private static function precedence($op) {
@@ -147,15 +188,19 @@ class ExpressionEvaluator {
     }
 
     private static function operate($a, $b, $op) {
-        settype($a, 'float');
-        settype($b, 'float');
+        if (!is_numeric($a) || !is_numeric($b)) {
+            throw new Exception('Invalid operands: non-numeric values in expression');
+        }
+        
+        $a = floatval($a);
+        $b = floatval($b);
         
         switch ($op) {
             case '+': return $a + $b;
             case '-': return $a - $b;
             case '*': return $a * $b;
             case '/': 
-                if ($b == 0) throw new Exception('Division by zero');
+                if ($b == 0) throw new Exception('Division by zero error');
                 return $a / $b;
             case '^': return pow($a, $b);
             default: throw new Exception("Invalid operator: $op");

@@ -47,7 +47,7 @@ require_once '../backend/Session.php';
 
             <input type="text" id="convert" name="expression" placeholder="Enter your Expression"><br>
 
-            <p id="ConvError" style="color: red;"></p>
+            <p id="ConvError"></p>
             <p id="ConvResult"></p>
 
             <div id="containButton">
@@ -116,10 +116,12 @@ require_once '../backend/Session.php';
                         throw new Error(data.error || 'Conversion failed');
                     }
 
-                    resultElement.textContent = `${targetType.toUpperCase()} = ${data.result}`;
+                    resultElement.innerHTML = `<span class="result-label">${targetType.toUpperCase()} Result</span><div class="result-container">${data.result}</div>`;
+                    resultElement.classList.remove('error');
                     await loadConversionHistory();
                 } catch (error) {
                     showValidationError(error.message);
+                    resultElement.textContent = '';
                     console.error('Conversion error:', error);
                 }
             });

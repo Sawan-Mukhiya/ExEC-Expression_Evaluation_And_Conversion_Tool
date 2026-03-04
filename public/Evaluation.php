@@ -47,7 +47,7 @@ require_once '../backend/Session.php';
         <input type="text" id="evaluate" placeholder="Enter your Expression (e.g., a-d*c)">
         <button onclick="extractVariables()">Next</button>
         <button onclick="resetForm('evaluate')">Reset</button><br />
-        <p id="EvalError" style="color: red;"></p>
+        <p id="EvalError"></p>
 
         <!-- Container for variable inputs -->
         <div id="variableInputs" style="display: none;">
@@ -84,7 +84,8 @@ require_once '../backend/Session.php';
                     } else {
                         input.classList.remove('error-border');
                     }
-                    variables[input.previousElementSibling.textContent.replace(':', '')] = input.value;
+                    const varName = input.previousElementSibling.textContent.replace(':', '');
+                    variables[varName] = parseFloat(input.value);
                 });
 
                 if (!isValid) {
@@ -115,13 +116,14 @@ require_once '../backend/Session.php';
                     throw new Error(data.error || 'Evaluation failed');
                 }
 
-                resultElement.textContent = `Result: ${data.result}`;
-                resultElement.style.color = '#27ae60';
+                resultElement.innerHTML = `<span class="result-label">Evaluation Result</span><div class="result-container">${data.result}</div>`;
+                resultElement.classList.remove('error');
                 await loadEvaluationHistory();
 
             } catch (error) {
                 errorElement.textContent = error.message;
                 errorElement.style.color = '#e74c3c';
+                resultElement.textContent = '';
                 console.error('Evaluation error:', error);
             }
         }

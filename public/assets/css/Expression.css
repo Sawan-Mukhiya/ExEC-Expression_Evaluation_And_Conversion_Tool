@@ -165,6 +165,27 @@ header {
     margin: 50px auto;
 }
 
+#d1, #d2 {
+    max-width: 600px;
+}
+
+#evaluationHistory, #conversionHistory {
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 30px;
+    background-color: #1e1e1e;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+}
+
+#evaluationHistory h3, #conversionHistory h3 {
+    color: #fbc02d;
+    margin-bottom: 25px;
+    font-size: 1.3em;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
 .heading {
     font-size: 2.5em;
     text-align: center;
@@ -196,6 +217,49 @@ select:focus, input:focus {
     box-shadow: 0 0 8px rgba(251, 192, 45, 0.3);
 }
 
+.input-group {
+    margin-bottom: 15px;
+    padding: 12px 0;
+    border-bottom: 1px solid #333;
+}
+
+.input-group:last-child {
+    border-bottom: none;
+}
+
+.input-group label {
+    margin-bottom: 8px;
+    font-size: 1em;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 10px;
+    margin: 0;
+}
+
+#variableInputs {
+    background: #262626;
+    border-radius: 8px;
+    padding: 20px;
+    margin-top: 25px;
+    margin-bottom: 25px;
+    border: 1px solid #333;
+}
+
+#variableInputs h3 {
+    color: #fbc02d;
+    margin-bottom: 20px;
+    font-size: 1.1em;
+}
+
+#inputs {
+    background: #1e1e1e;
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 15px;
+}
+
 button {
     background-color: #007bff;
     color: white;
@@ -217,10 +281,25 @@ button:hover {
 }
 
 /* Error Handling */
-#ConvError, #EvalError, #loginError, #signupError {
-    color: #ff4444;
+#ConvError, #EvalError, #loginError, #signupError, #contactError {
+    color: #ff6b6b;
     margin: 15px 0;
-    font-size: 0.9em;
+    margin-top: 20px;
+    padding: 12px 15px;
+    font-size: 0.95em;
+    background: rgba(255, 107, 107, 0.1);
+    border-left: 3px solid #ff6b6b;
+    border-radius: 4px;
+    display: none;
+    min-width: 250px;
+}
+
+#ConvError:not(:empty), #EvalError:not(:empty), #loginError:not(:empty), #signupError:not(:empty), #contactError:not(:empty) {
+    display: inline-block;
+}
+
+#result:not(:empty), #ConvResult:not(:empty) {
+    display: inline-block;
 }
 
 .error-border {
@@ -231,15 +310,97 @@ button:hover {
 /* History Sections */
 .history-item {
     background: #1e1e1e;
-    padding: 15px;
+    padding: 18px 20px;
     margin: 15px 0;
     border-radius: 8px;
     border: 1px solid #333;
+    border-left: 4px solid #fbc02d;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.history-item:hover {
+    border-left: 4px solid #fff;
+    background: #262626;
+    transform: translateX(5px);
+    box-shadow: 0 4px 12px rgba(251, 192, 45, 0.15);
+}
+
+.history-item strong {
+    color: #fbc02d;
+    display: block;
+    margin-bottom: 10px;
+    font-size: 1.1em;
+}
+
+.history-item br {
+    margin: 8px 0;
+    display: block;
+    content: '';
 }
 
 .history-item small {
     color: #888;
     font-size: 0.8em;
+    display: block;
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px solid #333;
+}
+
+/* Result Display Styles */
+#result, #ConvResult {
+    background: linear-gradient(135deg, #0a552b 0%, #386049 100%);
+    border-radius: 10px;
+    padding: 20px 25px;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    font-size: 1.3em;
+    font-weight: bold;
+    color: #ffffff;
+    box-shadow: 0 6px 15px rgba(39, 174, 96, 0.3);
+    min-width: 300px;
+    word-wrap: break-word;
+    animation: slideIn 0.4s ease-out;
+    display: none;
+}
+
+#result:not(:empty), #ConvResult:not(:empty) {
+    display: inline-block;
+}
+
+#result.error, #ConvResult.error {
+    background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+    box-shadow: 0 6px 15px rgba(231, 76, 60, 0.3);
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.result-container {
+    background: #1e1e1e;
+    border-radius: 10px;
+    padding: 25px;
+    margin: 30px 0;
+    border: 1px solid #333;
+}
+
+.result-label {
+    color: #fbc02d;
+    font-size: 0.9em;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 12px;
+    display: block;
 }
 
 /* Animations */
