@@ -15,16 +15,16 @@ ExEC enables users to:
 
 ## Key Features
 
-- ✅ Support for **three expression notations**:
+- Support for **three expression notations**:
   - **Infix** (a + b * c) - Most human-readable format
   - **Prefix** (* + a b c) - Polish notation used in stack-based languages
   - **Postfix** (a b c + *) - Reverse Polish notation used in calculators
 
-- ✅ **Real-time Expression Validation** - Ensures expressions follow correct syntax before processing
-- ✅ **Variable Substitution** - Evaluate expressions with custom variable values
-- ✅ **User History Tracking** - Store and view past conversions and evaluations
-- ✅ **Secure Authentication System** - User registration and login with bcrypt password hashing
-- ✅ **Modern Dark UI** - Professional dark theme for comfortable extended use
+- **Real-time Expression Validation** - Ensures expressions follow correct syntax before processing
+- **Variable Substitution** - Evaluate expressions with custom variable values
+- **User History Tracking** - Store and view past conversions and evaluations
+- **Secure Authentication System** - User registration and login with bcrypt password hashing
+- **Modern Dark UI** - Professional dark theme for comfortable extended use
 
 ## How It Works
 
@@ -204,26 +204,12 @@ ExpressionWebsite/
 
 ## Security Features
 
-- ✅ Password hashing with bcrypt
-- ✅ SQL prepared statements (PDO)
-- ✅ Session-based authentication
-- ✅ Input validation on frontend and backend
-- ✅ Protected routes (Session.php enforces login)
-- ✅ Error logging without exposing details
-
-## Future Enhancements
-
-- Add support for more mathematical operators
-- Implement user profile settings
-- Add export history to PDF/CSV
-- Real-time expression graphs/visualization
-- Mobile app version
-- Support for trigonometric functions
-
-## Support & Contribution
-
-For issues, questions, or contributions, please refer to the project documentation or contact the development team.
-
+- Password hashing with bcrypt
+- SQL prepared statements (PDO)
+- Session-based authentication
+- Input validation on frontend and backend
+- Protected routes (Session.php enforces login)
+- Error logging without exposing details
 ---
 
-**ExEC** - Making Mathematical Expressions Simple! 🚀
+**ExEC** - Making Mathematical Expressions Simple! 
